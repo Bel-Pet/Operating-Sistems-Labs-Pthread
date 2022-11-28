@@ -19,6 +19,8 @@ void* thread_body(void * param) {
     }
     
     pthread_cleanup_pop(0);
+
+    pthread_exit(0);
 }
 
 int main(int argc, char *argv[]) {
