@@ -11,7 +11,7 @@
 #define THREADS_COUNT 2
 
 typedef struct Param {
-    pthread_barrier_t bar;
+    // pthread_barrier_t bar;
     pthread_mutex_t *mutex;
     int count;
 } Param;
@@ -41,30 +41,30 @@ void destroyParam(Param *arg, int count) {
     for (int i = 0; i < count; i++){
         pthread_mutex_destroy(&arg->mutex[i]);
     }
-    pthread_barrier_destroy(&arg->bar);
+    // pthread_barrier_destroy(&arg->bar);
     free(arg->mutex);
 }
 
 int initParam(Param *arg, int count) {
-    int code = pthread_barrier_init(&arg->bar, NULL, THREADS_COUNT);
-    if (code != 0) {
-        perror("pthread_barrier_init(): ");
-        return EXIT_FAILURE;
-    }
+    // int code = pthread_barrier_init(&arg->bar, NULL, THREADS_COUNT);
+    // if (code != 0) {
+    //     perror("pthread_barrier_init(): ");
+    //     return EXIT_FAILURE;
+    // }
 
     arg->count = MUTEX_COUNT;
     arg->mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * count);
     if(!arg->mutex) {
         perror("malloc(): ");
-        pthread_barrier_destroy(&arg->bar);
+        // pthread_barrier_destroy(&arg->bar);
         return EXIT_FAILURE;
     }
 
     pthread_mutexattr_t attr;
-	code = pthread_mutexattr_init(&attr);
+	int code = pthread_mutexattr_init(&attr);
     if(code != 0) {
         perror("pthread_mutexattr_init(): ");
-        pthread_barrier_destroy(&arg->bar);
+        // pthread_barrier_destroy(&arg->bar);
         free(arg->mutex);
         return EXIT_FAILURE;
     }
@@ -72,7 +72,7 @@ int initParam(Param *arg, int count) {
 	code = pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK);
     if(code != 0) {
         perror("pthread_mutexattr_settype(): ");
-        pthread_barrier_destroy(&arg->bar);
+        // pthread_barrier_destroy(&arg->bar);
         free(arg->mutex);
         return EXIT_FAILURE;
     }
@@ -85,7 +85,7 @@ int initParam(Param *arg, int count) {
                 pthread_mutex_destroy(&arg->mutex[j]);
             }
             pthread_mutexattr_destroy(&attr);
-            pthread_barrier_destroy(&arg->bar);
+            // pthread_barrier_destroy(&arg->bar);
             free(arg->mutex);
             return EXIT_FAILURE;
 	    }
